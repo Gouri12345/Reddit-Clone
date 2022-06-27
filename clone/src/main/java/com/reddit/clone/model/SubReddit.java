@@ -1,16 +1,16 @@
 package com.reddit.clone.model;
 
+import java.time.Instant;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
-
-import org.springframework.lang.Nullable;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,28 +19,26 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Post {
-
+public class SubReddit {
+	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long postId;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private Long id;
+
+	@NotBlank(message="Name cannot be blank")
+	private String name;
 	
-	@NotBlank(message="Post name cannot be blank")
-	private String postName;
-	
-	@Nullable
-	private String url;
-	
-	@Nullable
-	@Lob
+	@NotBlank(message="Description cannot be balnk")
 	private String description;
 	
-	private Integer voteCount;
+	@OneToMany(fetch=FetchType.LAZY)
+	private List<Post> posts;
+	
+	private Instant createdDate;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="userId",referencedColumnName = "userId")
 	private User user;
 }

@@ -6,11 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotBlank;
-
-import org.springframework.lang.Nullable;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,28 +16,24 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Post {
+public class Vote {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long postId;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private Long voteId;
 	
-	@NotBlank(message="Post name cannot be blank")
-	private String postName;
+	private VoteType voteType;
 	
-	@Nullable
-	private String url;
-	
-	@Nullable
-	@Lob
-	private String description;
-	
-	private Integer voteCount;
-	
+	@NotNull
 	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="postId" ,referencedColumnName = "postId")
+	private Post post;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="userId",referencedColumnName = "userId")
 	private User user;
+	
 }
