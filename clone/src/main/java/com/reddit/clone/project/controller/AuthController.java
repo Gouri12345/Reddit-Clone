@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reddit.clone.project.exception.SpringRedditException;
+import com.reddit.clone.project.model.AuthenticationResponse;
+import com.reddit.clone.project.model.LoginRequest;
 import com.reddit.clone.project.model.RegisterRequest;
-import com.reddit.clone.project.service.impl.AuthService;
+import com.reddit.clone.project.service.AuthService;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -29,13 +30,26 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) throws SpringRedditException{
 		log.info(registerRequest.toString());
+		
+		try {
 		 authService.signup(registerRequest);
-	        return new ResponseEntity<String>("User registration successful",HttpStatus.OK);
+//	        return new ResponseEntity<String>("User registration successful",HttpStatus.OK);}
+		return ResponseEntity.ok("User registration Successful");
+		}
+		 catch(SpringRedditException e){
+			return new ResponseEntity<String>(e.getMessage(),HttpStatus.OK);
+		}
+		
+	}
+	
+	@PostMapping("/login")
+	public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) throws SpringRedditException{
+		 return authService.login(loginRequest);
 		
 	}
 	
 	 @GetMapping("accountVerification/{token}")
-	    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
+	    public ResponseEntity<String> verifyAccount(@PathVariable String token) throws SpringRedditException {
 	        authService.verifyAccount(token);
 	        return new ResponseEntity<>("Account Activated Successully", HttpStatus.OK);
 	    }

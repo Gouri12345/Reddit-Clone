@@ -5,9 +5,11 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.reddit.clone.project.model.NotificationEmail;
+import com.reddit.clone.project.service.MailService;
 
 import lombok.AllArgsConstructor;
 
@@ -18,6 +20,7 @@ public class MailServiceImpl implements MailService{
 	private final JavaMailSender mailSender;
 	@Autowired
     MailContentBuilder mailContentBuilder;
+	@Async
 	public void sendMail(NotificationEmail notificationEmail) {
 		  MimeMessagePreparator messagePreparator = mimeMessage -> {
 	            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);

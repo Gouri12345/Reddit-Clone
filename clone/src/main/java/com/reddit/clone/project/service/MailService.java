@@ -1,4 +1,4 @@
-package com.reddit.clone.project.service.impl;
+package com.reddit.clone.project.service;
 
 import com.reddit.clone.project.model.NotificationEmail;
 
