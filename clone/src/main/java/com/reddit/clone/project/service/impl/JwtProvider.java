@@ -6,6 +6,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
@@ -17,10 +18,17 @@ import org.springframework.stereotype.Service;
 import com.reddit.clone.project.exception.SpringRedditException;
 import com.reddit.clone.project.service.JwtService;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class JwtProvider implements JwtService {
 
 	private KeyStore keyStore; 
@@ -50,5 +58,36 @@ public class JwtProvider implements JwtService {
 	            throw new SpringRedditException("Exception occured while retrieving public key from keystore");
 	        }
 	}
+	@Override
+	public boolean validateToken(String token) {
+		try {
+			Jwts.parser().setSigningKey(getPublicKey()).parseClaimsJws(token);
+			return true;
+		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
+				| IllegalArgumentException | KeyStoreException e) {
+			log.error("Exception occured while validating token");
+		}
+		return false;
+	}
+	private PublicKey getPublicKey() throws KeyStoreException {
+		 return (PublicKey)keyStore.getCertificate("springblog").getPublicKey();
+	}
+	public String getUsernameFromJWT(String token) {
+        Claims claims;
+		try {
+			claims = Jwts.parser()
+			        .setSigningKey(getPublicKey())
+			        .parseClaimsJws(token)
+			        .getBody();
+			  return claims.getSubject();
+		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
+				| IllegalArgumentException | KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+      
+    }
 
 }

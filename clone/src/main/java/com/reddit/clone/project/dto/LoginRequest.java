@@ -1,14 +1,16 @@
-package com.reddit.clone.project.model;
+package com.reddit.clone.project.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+@AllArgsConstructor
+public class LoginRequest {
 
-	private String authenticationToken;
 	private String userName;
+	private String password;
+	
+	
 }

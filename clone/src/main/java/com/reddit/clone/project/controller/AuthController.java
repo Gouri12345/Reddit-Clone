@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.reddit.clone.project.dto.AuthenticationResponse;
+import com.reddit.clone.project.dto.LoginRequest;
+import com.reddit.clone.project.dto.RegisterRequest;
 import com.reddit.clone.project.exception.SpringRedditException;
-import com.reddit.clone.project.model.AuthenticationResponse;
-import com.reddit.clone.project.model.LoginRequest;
-import com.reddit.clone.project.model.RegisterRequest;
 import com.reddit.clone.project.service.AuthService;
 
 import lombok.extern.slf4j.Slf4j;

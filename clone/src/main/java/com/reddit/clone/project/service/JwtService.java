@@ -6,4 +6,5 @@ import com.reddit.clone.project.exception.SpringRedditException;
 
 public interface JwtService {
 	 public String generateToken(Authentication authentication) throws SpringRedditException;
+	 boolean validateToken(String token) throws SpringRedditException;
 }

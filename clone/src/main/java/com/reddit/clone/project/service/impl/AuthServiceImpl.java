@@ -1,25 +1,25 @@
 package com.reddit.clone.project.service.impl;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.reddit.clone.project.dto.AuthenticationResponse;
+import com.reddit.clone.project.dto.LoginRequest;
+import com.reddit.clone.project.dto.RegisterRequest;
 import com.reddit.clone.project.exception.SpringRedditException;
-import com.reddit.clone.project.model.AuthenticationResponse;
-import com.reddit.clone.project.model.LoginRequest;
 import com.reddit.clone.project.model.NotificationEmail;
-import com.reddit.clone.project.model.RegisterRequest;
 import com.reddit.clone.project.model.User;
 import com.reddit.clone.project.model.VerificationToken;
 import com.reddit.clone.project.repository.UserRepository;
@@ -28,7 +28,6 @@ import com.reddit.clone.project.service.AuthService;
 import com.reddit.clone.project.service.MailService;
 import com.reddit.clone.project.util.Constants;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -113,10 +112,20 @@ public class AuthServiceImpl implements AuthService{
 	public AuthenticationResponse login(LoginRequest loginRequest) throws SpringRedditException {
 		 Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserName(),
 	                loginRequest.getPassword()));
+		 log.info("AUthentication:{}",authenticate.toString());
 	        SecurityContextHolder.getContext().setAuthentication(authenticate);
 	        String authenticationToken = jwtProvider.generateToken(authenticate);
 	        return new AuthenticationResponse(authenticationToken, loginRequest.getUserName());
 	  
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public User getCurrentUser() {
+		org.springframework.security.core.userdetails.User principal=
+				(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return userRepository.findByUserName(principal.getUsername()).
+				orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
 	}
 	
 	
