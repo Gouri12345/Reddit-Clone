@@ -82,7 +82,6 @@ public class JwtProvider implements JwtService {
 			  return claims.getSubject();
 		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
 				| IllegalArgumentException | KeyStoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

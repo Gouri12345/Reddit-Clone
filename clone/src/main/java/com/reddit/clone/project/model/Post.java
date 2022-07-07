@@ -1,5 +1,7 @@
 package com.reddit.clone.project.model;
 
+import java.time.Instant;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,7 +41,7 @@ public class Post {
 	private String description;
 	
 	private Integer voteCount;
-	
+	private Instant createdDate;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="userId",referencedColumnName = "userId")
 	private User user;
